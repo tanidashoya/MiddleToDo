@@ -1,0 +1,129 @@
+
+.homeContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100vw;
+    min-height: 55vh;
+    text-align: center;
+    /* background:linear-gradient(45deg, rgb(239, 176, 255), #ff8936); */
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.titleContainer{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    max-width: 550px;
+    width: 100%;
+    /* z-index: 1000; */
+    /* background: rgba(255, 255, 255, 0.1); */
+    padding: 1.2rem;
+    border-radius: 1rem;
+    /* backdrop-filter: blur(10px); */
+    /* box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1); */
+}
+
+.title{
+    font-size: 3.4rem;
+    color: #fff;
+    font-weight: bold;
+    letter-spacing: 0.1rem;
+}
+
+
+
+.inputContainer{
+    display:flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap:0.8rem;
+    width: 100%;
+}
+
+.dateInput {
+    width: 30%;
+    color: #1f1f1f;
+    font-size: 1rem;
+    padding: 0.72rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+  }
+  
+
+.inputBox{
+    font-size: 1rem;
+    width: 60%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+}
+
+.addButton{
+    padding: 0.8rem 1.2rem;
+    width: 20%;
+    background: linear-gradient(45deg, #828282, #838383);
+    color: #fff;
+    border:none;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.dataContainer{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 0.4rem;
+    max-width: 650px;
+    width: 100%;
+}
+
+.searchInput{
+    width: 60%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+}
+
+.dateInput:focus,
+.inputBox:focus,
+.searchInput:focus{
+    outline: none;
+    border-color: #ff8936;
+    box-shadow: 0 0 0 2px rgba(255, 137, 54, 0.2);
+}
+
+.taskListTitle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.taskListTitleText {
+    color: #686868;
+    border-bottom: 1px solid #686868;
+    font-weight: bold;
+    font-size: 1.8rem;
+    font-weight: 500;
+    margin-top: 1.8rem;
+    margin-bottom: 1.8rem;
+}
+
+.taskList{
+    background: #fff;
+    margin-top: calc(52vh - 20px);
+    max-width: 750px;
+    width:100%;
+    border-radius: 0.5rem;
+    margin-bottom: 2.5rem;
+}

@@ -1,0 +1,5 @@
+html, body {
+  min-height: 100%;
+  background:linear-gradient(225deg, rgb(237, 166, 255), #ffbc85);
+  /* background-attachment: fixed; */
+}
