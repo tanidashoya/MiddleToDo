@@ -10,15 +10,16 @@ import {useReducer} from 'react';
 import useLocalStorage from '../hooks/useLocalStrage.js';
 import useFilteredTasks from '../hooks/useFilteredTasks.js';
 import useSortedTasks from '../hooks/useSortedTasks.js';
-
-
-
+import useEnterKey from '../hooks/useEnterKey.js';
 
 
 function Home() {
 
+    //タスクの管理をするuseReducer
+
     //期限入力欄のフォーカスを管理するuseRef
     const taskInputRef = useRef(null);
+    const dueDateInputRef = useRef(null);
 
     //期限日付の管理をする
     const [dueDate, setDueDate] = useState("");
@@ -87,31 +88,53 @@ function Home() {
         setTasks(updatedTasks);
     }
     
-    //Enterキーが押されたらタスクを追加,Ctrl+Enterキーが押されたらタスクを削除
-    const handleKeyDown = (e) => {
-        if(e.key === 'Enter'){
+    const handleKeyDown = useEnterKey(taskInputRef,(e) => {
+        if (e.key === "Enter"){
             handleAddTask();
-        }
-
-        if (e.ctrlKey && e.key === 'Enter') {
+        } else if (e.ctrlKey && e.key === "Enter"){
             handleDeleteTask(0);
         }
-    }
+    })
+    
+
+    //Enterキーが押されたらタスクを追加,Ctrl+Enterキーが押されたらタスクを削除
+    // const handleKeyDown = (e) => {
+    //     if(e.key === 'Enter'){
+    //         handleAddTask();
+    //     }
+
+    //     if (e.ctrlKey && e.key === 'Enter') {
+    //         handleDeleteTask(0);
+    //     }
+    // }
+
+    const handleKeyDownDue = useEnterKey(dueDateInputRef,(e)=>{
+        if (e.ctrlKey && e.key === 'Enter'){
+            setDueDate("");
+        } else if (e.key === "Enter"){
+            e.preventDefault();
+            taskInputRef.current?.focus();
+        }
+    })
+
+
 
     //期限入力欄でctrl+Enterキーが押されたら期限をクリア
     //  taskInputRef.current → 実際の <input> 要素 
     //  .focus() → ブラウザの機能で「その入力欄にカーソルを置く」 
     //  taskInputRef.currentがnullでない場合にのみメソッドを呼び出す(nullの場合?がないとエラーになりアプリが止まる)
-    const handleKeyDownDue = (e) => {
-        if (e.ctrlKey && e.key === 'Enter'){
-            setDueDate("");
-        }
+    // const handleKeyDownDue = (e) => {
+    //     if (e.ctrlKey && e.key === 'Enter'){
+    //         setDueDate("");
+    //     }
 
-        if (e.key === 'Enter') {
-            e.preventDefault(); // フォームの送信などを防止
-            taskInputRef.current?.focus();
-        }
-    }
+    //     if (e.key === 'Enter') {
+    //         e.preventDefault(); // フォームの送信などを防止
+    //         taskInputRef.current?.focus();
+    //     }
+    // }
+
+
 
     //編集中のタスクを編集する(編集ボタンが押されたら編集モードに入る)
     //タスクオブジェクトを受け取るように変更
@@ -167,7 +190,7 @@ function Home() {
                     <div className={styles.inputContainer}>
                         {/* onChange⇒入力が変更されたらhandleChangeを呼び出す */}
 
-                        <input className={styles.dateInput} type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} onKeyDown={handleKeyDownDue}/>
+                        <input className={styles.dateInput} type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} onKeyDown={handleKeyDownDue} ref={dueDateInputRef}/>
                         {/* ref⇒DOM要素を参照する */}
                         {/* ref={taskInputRef}⇒このinputタグをJavaScript側から直接操作できるようにする」ための参照（Ref）を作る処理 */}
                         {/* つまりtaskInputRef.current = 実際のinput要素（HTMLInputElement） となる*/}

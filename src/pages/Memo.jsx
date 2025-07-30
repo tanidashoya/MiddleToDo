@@ -1,10 +1,16 @@
 import styles from './Memo.module.css';
-import { useState,useEffect } from 'react';
+import { useState,useEffect,useRef } from 'react';
 import MemoList from '../components/MemoList.jsx';
+import useEnterKey from '../hooks/useEnterKey.js';
+import useSortedTasks from '../hooks/useSortedTasks.js';
+
 
 
 
 function Memo() {
+
+    // const createRef = useRef(null);
+
     //メモのタイトルを管理するuseState
     const [memoTitle,setMemoTitle] = useState("");
 
@@ -15,6 +21,14 @@ function Memo() {
         return storedMemoList ? JSON.parse(storedMemoList) : [];
     });
 
+    //メモの内容をlocalstorageに保存する
+    //JSON.stringify(オブジェクト) → オブジェクトをJSON形式の文字列に変換するメソッド
+    useEffect(()=>{
+        localStorage.setItem("memoList",JSON.stringify(memoList));
+    },[memoList])
+
+
+    
     //メモの内容を管理するuseState
     const [memoContent,setMemoContent] = useState("");
 
@@ -65,6 +79,12 @@ function Memo() {
         setMemoContent("");
     }
 
+
+    const handleKeyDownCreate = useEnterKey((e) => {
+        setIsCreateing(true);
+    })
+
+
     //ctrl+cキーが押されたら作成画面を開く
     //Reactの中で JavaScript の「生のAPI（DOM API）」を使うのはよくあること   
     //useEffect() → 副作用を実行するためのフック(第二引数に[]を渡すと、初回のみ実行される)
@@ -77,64 +97,62 @@ function Memo() {
     // window.addEventListener が再レンダリングや再マウント時に
     // 重複して登録されるのを防いでいる
     //Reactでは DOM操作に関わるコードは useEffect(() => {...}, []) の中に書くのが原則・一般的
-    useEffect(() => {
-        const handleKeyDownCreate = (e) => {
-            if (e.ctrlKey && e.key === 'c') {
-                e.preventDefault(); // ブラウザのデフォルト動作を防ぐ（コピーとか）
-                setIsCreateing(true);
-            }
-        };
+    // useEffect(() => {
+    //     const handleKeyDownCreate = (e) => {
+    //         if (e.ctrlKey && e.key === 'c') {
+    //             e.preventDefault(); // ブラウザのデフォルト動作を防ぐ（コピーとか）
+    //             setIsCreateing(true);
+    //         }
+    //     };
 
-        //addEventListener() → イベントリスナーを追加するメソッド
-        //第一引数：keydown → キーが押されたときに発火するイベント
-        //第二引数：handleKeyDownCreate → キーが押されたときに実行する関数
-        window.addEventListener('keydown', handleKeyDownCreate);
+    //     //addEventListener() → イベントリスナーを追加するメソッド
+    //     //第一引数：keydown → キーが押されたときに発火するイベント
+    //     //第二引数：handleKeyDownCreate → キーが押されたときに実行する関数
+    //     window.addEventListener('keydown', handleKeyDownCreate);
         
-        //クリーンアップ関数
-        //removeEventListener() → イベントリスナーを削除するメソッド
-        //実行されるタイミング：コンポーネントがアンマウントされるタイミング
-        //コンポーネントがアンマウントされるタイミング：コンポーネントが画面から消えるタイミング
-        return () => {
-            window.removeEventListener('keydown', handleKeyDownCreate);
-        };
-    }, []);
+    //     //クリーンアップ関数
+    //     //removeEventListener() → イベントリスナーを削除するメソッド
+    //     //実行されるタイミング：コンポーネントがアンマウントされるタイミング
+    //     //コンポーネントがアンマウントされるタイミング：コンポーネントが画面から消えるタイミング
+    //     return () => {
+    //         window.removeEventListener('keydown', handleKeyDownCreate);
+    //     };
+    // }, []);
     
+    const sortedMemoList = useSortedTasks(memoList,sortOrder)
 
     //並び替え順を管理するuseState
-    const sorterdMemoList = [...memoList].sort((a,b) => {
+    // const sorterdMemoList = [...memoList].sort((a,b) => {
 
-        //日付型で比較する
-        const dataA = new Date(a.createdAt)
-        const dataB = new Date(b.createdAt)
+    //     //日付型で比較する
+    //     const dataA = new Date(a.createdAt)
+    //     const dataB = new Date(b.createdAt)
 
-        //ascの場合は正の数だと入れ替える。負の数だと入れ替えない。
-        // sort(正の値)は入れ替える、sort（負の値）は入れ替えない
-        //戻り値が負の数だと入れ替えない。
-        if(sortOrder === "asc"){
-            return dataA - dataB;
-        } else {
-            return dataB - dataA;
-        }
-    })
+    //     //ascの場合は正の数だと入れ替える。負の数だと入れ替えない。
+    //     // sort(正の値)は入れ替える、sort（負の値）は入れ替えない
+    //     //戻り値が負の数だと入れ替えない。
+    //     if(sortOrder === "asc"){
+    //         return dataA - dataB;
+    //     } else {
+    //         return dataB - dataA;
+    //     }
+    // })
+
+
 
     //検索欄に文字を入力したら入力した文字でフィルターされる
-    //検索窓が空の場合はsorterdTasksをそのまま表示する（includes("")は全ての文字列にマッチする）
+    //検索窓が空の場合はsortedTasksをそのまま表示する（includes("")は全ての文字列にマッチする）
     //検索結果は新たな状態として保持していないので入力を消すと元に戻る
     //filter()は配列の要素を一つずつ取り出して、条件に合うかどうかを判断する。処理部分がTrueの場合は新しい配列に追加
     //toLowerCase()は文字列を小文字に変換するメソッド
     //includes()は文字列に指定した文字列が含まれているかどうかを判断するメソッド
     //検索対象の文字列.includes(検索したい文字列)
-    const filteredMemoList = sorterdMemoList.filter(memo => 
+    const filteredMemoList = sortedMemoList.filter(memo => 
         memo.title.toLowerCase().includes(searchText.toLowerCase()) || 
         memo.content.toLowerCase().includes(searchText.toLowerCase())
     )
     
 
-    //メモの内容をlocalstorageに保存する
-    //JSON.stringify(オブジェクト) → オブジェクトをJSON形式の文字列に変換するメソッド
-    useEffect(()=>{
-        localStorage.setItem("memoList",JSON.stringify(memoList));
-    },[memoList])
 
 
     //Reactのフォームでは、<input> や <textarea> に入力された値を即時に state に保存することで、
