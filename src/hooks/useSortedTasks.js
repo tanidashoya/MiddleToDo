@@ -1,9 +1,9 @@
-import { useState } from "react";
+
 
 
 function useSortedTasks(tasks,sortOrder){
     return [...tasks].sort((a,b)=>  {
-        if (a.completed !== b.copmpleted) {
+        if (a.completed !== b.completed) {
             return a.completed ? 1:-1;
         }
 

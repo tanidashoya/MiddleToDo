@@ -1,7 +1,7 @@
 import styles from './Memo.module.css';
-import { useState,useEffect,useRef } from 'react';
+import { useState,useEffect,useRef } from 'react';  //useRefはDOM要素を参照するために使う
 import MemoList from '../components/MemoList.jsx';
-import useEnterKey from '../hooks/useEnterKey.js';
+import useWindowKey from '../hooks/useWindowKey.js';
 import useSortedTasks from '../hooks/useSortedTasks.js';
 
 
@@ -80,7 +80,7 @@ function Memo() {
     }
 
 
-    const handleKeyDownCreate = useEnterKey((e) => {
+    const handleKeyDownCreate = useWindowKey((e) => {
         setIsCreateing(true);
     })
 

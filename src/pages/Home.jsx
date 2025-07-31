@@ -6,11 +6,12 @@
 import {useState,useEffect,useRef} from 'react';
 import TaskList from '../components/TaskList.jsx';
 import styles from './Home.module.css';
-import {useReducer} from 'react';
-import useLocalStorage from '../hooks/useLocalStrage.js';
 import useFilteredTasks from '../hooks/useFilteredTasks.js';
 import useSortedTasks from '../hooks/useSortedTasks.js';
 import useEnterKey from '../hooks/useEnterKey.js';
+import useLocalStorageReducer from '../hooks/useLocalStrageReducer.js';
+import {taskReducer} from '../reducers/taskReducer.js';
+
 
 
 function Home() {
@@ -30,8 +31,9 @@ function Home() {
 
     //表示するタスクを管理するuseLocalStorage
     //useLocalStorageの第一引数は保存するデータのキー、第二引数は保存するデータの値
-    //戻り値が[value,setValue]があるので、それをtasksとsetTasksに代入する
-    const [tasks,setTasks] =useLocalStorage("tasks",[]);
+    //戻り値が[state,dispatch]があるので、それをtasksとdispatchに代入する
+    //dispatchによってuseLocalStorageReducer内にあるtaskReducerが実行される
+    const [tasks,dispatch] =useLocalStorageReducer("tasks",taskReducer,[]);
 
     //編集中のタスクを管理するuseState
     const [editText,setEditText] = useState("");
@@ -58,7 +60,7 @@ function Home() {
         if(newTask.trim() !== ""){
             //tasksにnewTaskを追加する
             //追加されるタスクは{tasks:newTask, completed:false}というオブジェクトとして追加される
-            setTasks([...tasks, {task:newTask, completed:false, due:dueDate}])
+            dispatch({"type":"add","payload":{task:newTask,completed:false,due:dueDate}})
             setDueDate("");
             setNewTask(""); // 入力フィールドをクリア
         }
@@ -70,7 +72,7 @@ function Home() {
     const handleDeleteTask = (taskToDelete) => {
         //タスクの内容で検索して削除する
         //ここでのtaskはtasks配列の一つ一つの要素{task:"タスク名", completed:false, due:dueDate}というオブジェクトとして渡される
-        setTasks(tasks.filter(task => task !== taskToDelete))
+        dispatch({"type":"delete",payload:taskToDelete})
     }
 
     //タスクの完了状態をチェックボックスで切り替える
@@ -78,37 +80,26 @@ function Home() {
     //ここでのreturnはhandleToggleTaskのreturnではなく、map関数のreturnである
     //map関数は配列の各要素に対して処理を行う関数であり、新しい配列に入っていく
     const handleToggleTask = (taskToToggle) => {
-        const updatedTasks = tasks.map(task => {
-            if (task === taskToToggle) {
-                return { ...task, completed: !task.completed };
-            }
-            return task;
-        });
-        
-        setTasks(updatedTasks);
+        dispatch({"type":"toggle",payload:taskToToggle})
     }
     
-    const handleKeyDown = useEnterKey(taskInputRef,(e) => {
+
+    //DOM要素を参照してイベントを追加するカスタムHookなので変数代入も要素に設定も必要ない
+    useEnterKey(taskInputRef,(e) => {
         if (e.key === "Enter"){
             handleAddTask();
         } else if (e.ctrlKey && e.key === "Enter"){
-            handleDeleteTask(0);
+            // 最初のタスクを削除
+            if (tasks.length > 0) {
+                handleDeleteTask(tasks[0]);
+            }
         }
     })
-    
 
-    //Enterキーが押されたらタスクを追加,Ctrl+Enterキーが押されたらタスクを削除
-    // const handleKeyDown = (e) => {
-    //     if(e.key === 'Enter'){
-    //         handleAddTask();
-    //     }
 
-    //     if (e.ctrlKey && e.key === 'Enter') {
-    //         handleDeleteTask(0);
-    //     }
-    // }
 
-    const handleKeyDownDue = useEnterKey(dueDateInputRef,(e)=>{
+    //DOM要素を参照してイベントを追加するカスタムHookなので変数代入も要素に設定も必要ない
+    useEnterKey(dueDateInputRef,(e)=>{
         if (e.ctrlKey && e.key === 'Enter'){
             setDueDate("");
         } else if (e.key === "Enter"){
@@ -145,13 +136,7 @@ function Home() {
 
     //編集中のタスクを保存する
     const handleSaveTask = (taskToSave) => {
-        const updatedTasks = tasks.map(task => {
-            if (task === taskToSave) {
-                return { ...task, task: editText };
-            }
-            return task;
-        });
-        setTasks(updatedTasks);
+        dispatch({"type":"edit",payload:{original:taskToSave,editText:editText}});
         //編集中のタスクを保存したら編集モードを終了するためにsetEditingTaskをnullにする
         setEditingTask(null);
         setEditText("");
@@ -190,11 +175,11 @@ function Home() {
                     <div className={styles.inputContainer}>
                         {/* onChange⇒入力が変更されたらhandleChangeを呼び出す */}
 
-                        <input className={styles.dateInput} type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} onKeyDown={handleKeyDownDue} ref={dueDateInputRef}/>
+                        <input className={styles.dateInput} type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} ref={dueDateInputRef}/>
                         {/* ref⇒DOM要素を参照する */}
                         {/* ref={taskInputRef}⇒このinputタグをJavaScript側から直接操作できるようにする」ための参照（Ref）を作る処理 */}
                         {/* つまりtaskInputRef.current = 実際のinput要素（HTMLInputElement） となる*/}
-                        <input className={styles.inputBox} type="text" placeholder="タスクを入力" value={newTask} ref={taskInputRef} onChange={handleChange} onKeyDown={handleKeyDown}/>
+                        <input className={styles.inputBox} type="text" placeholder="タスクを入力" value={newTask} ref={taskInputRef} onChange={handleChange}/>
                         <button className={styles.addButton} onClick={handleAddTask}>追加</button>
                 </div>
                 {/* 並び替えボタン */}
