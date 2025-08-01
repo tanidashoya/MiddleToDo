@@ -7,6 +7,7 @@ function useSortedTasks(tasks,sortOrder){
             return a.completed ? 1:-1;
         }
 
+        //0:並び順を維持する,-1:「a を b より前にする＝明確に順序を変える」,1:「b を a より前にする＝明確に順序を変える」
         if (!a.due && !b.due) return 0;
         if (!a.due) return 1;
         if (!b.due) return -1;

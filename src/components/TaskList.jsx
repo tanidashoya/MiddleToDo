@@ -12,7 +12,6 @@ function TaskList(props) {
         setEditText,
         handleSaveTask,
         handleEditCancel,
-        // sorterdTasks
     } = props;
     
 

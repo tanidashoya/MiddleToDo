@@ -3,7 +3,7 @@
 //ユーザーの行動を受け取って状態を変化させる → 状態の変化をUIに反映させる
 
 //useRef は「DOM参照もできる」フック（Hook）であり、かつ「再レンダリングを伴わずに値を保持できる」フック
-import {useState,useEffect,useRef} from 'react';
+import {useState,useRef} from 'react';
 import TaskList from '../components/TaskList.jsx';
 import styles from './Home.module.css';
 import useFilteredTasks from '../hooks/useFilteredTasks.js';
@@ -16,9 +16,9 @@ import {taskReducer} from '../reducers/taskReducer.js';
 
 function Home() {
 
-    //タスクの管理をするuseReducer
 
-    //期限入力欄のフォーカスを管理するuseRef
+    //カスタムHookでショートカットキーを扱うためのuseRef
+    //useRefはDOM要素を参照するためのフック（これでinput要素を参照できる）
     const taskInputRef = useRef(null);
     const dueDateInputRef = useRef(null);
 
@@ -29,10 +29,12 @@ function Home() {
     //初期値はinputのvalueと考える
     const[newTask,setNewTask] = useState("");
 
-    //表示するタスクを管理するuseLocalStorage
-    //useLocalStorageの第一引数は保存するデータのキー、第二引数は保存するデータの値
+    //useLocalStorageReducerの第一引数は保存するデータのキー、第二引数はreducer、第三引数は初期値
     //戻り値が[state,dispatch]があるので、それをtasksとdispatchに代入する
     //dispatchによってuseLocalStorageReducer内にあるtaskReducerが実行される
+    //これはそもそもtasksをいろんなルール（add,delete,toggle,edit）で管理するためにuseReducerを使っている
+    //かつlocalStorageに保存・最初のレンダリング時に取得するためにuseLocalStorageReducerのカスタムHookを使っている
+    //以上の機能を持つカスタムHook（useLocalStorageReducer）
     const [tasks,dispatch] =useLocalStorageReducer("tasks",taskReducer,[]);
 
     //編集中のタスクを管理するuseState
@@ -85,24 +87,25 @@ function Home() {
     
 
     //DOM要素を参照してイベントを追加するカスタムHookなので変数代入も要素に設定も必要ない
-    useEnterKey(taskInputRef,(e) => {
-        if (e.key === "Enter"){
-            handleAddTask();
-        } else if (e.ctrlKey && e.key === "Enter"){
-            // 最初のタスクを削除
-            if (tasks.length > 0) {
-                handleDeleteTask(tasks[0]);
-            }
+    useEnterKey(taskInputRef, (e) => {
+        //ctrlキーが押されている場合は最初のタスクを削除
+        //ctrlキーが押されていない場合はタスクを追加
+        if (e.ctrlKey) {
+          // Ctrl + Enter：最初のタスクを削除
+          if (tasks.length > 0) handleDeleteTask(tasks[0]);
+        } else {
+          // Enterのみ：タスクを追加
+          handleAddTask();
         }
-    })
-
+    });
+      
 
 
     //DOM要素を参照してイベントを追加するカスタムHookなので変数代入も要素に設定も必要ない
     useEnterKey(dueDateInputRef,(e)=>{
-        if (e.ctrlKey && e.key === 'Enter'){
+        if (e.ctrlKey){
             setDueDate("");
-        } else if (e.key === "Enter"){
+        } else {
             e.preventDefault();
             taskInputRef.current?.focus();
         }

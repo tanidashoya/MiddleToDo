@@ -6,14 +6,14 @@ function useLocalStorageReducer(key, reducer, initialState) {
   //useReducerの第一引数はreducer、第二引数は初期値
   //reducerはstateを変更するための関数
   //initialStateは初期値
-  //useReducerの戻り値は[state,dispatch]
+  //useLocalStorageReducerの戻り値は[state,dispatch]
   //stateは現在のstate、dispatchはstateを変更するための関数
 
-  //initialState がそのまま最初の state になる
-  // reducer は初期値に一切手を加えない → 初期値がそのまま最初の state になる
   // dispatch() が呼ばれたときだけ reducer(state, action) が実行され、state を更新する
   //useReducerの第2引数は初期値、第3引数は初期化関数
   //useReducerの第三引数(初期値関数)では初期値をlocalStorageから取得する
+  //stateの中身はlocalstrageの{key}キーのオブジェクトの値ということ
+  // なければinitialState,useLocalStrageReducerを呼び出したときに渡された第3引数の値が入る
   const [state, dispatch] = useReducer(reducer, initialState, (() => {
     const stored = localStorage.getItem(key);
     return stored ? JSON.parse(stored) : initialState;
