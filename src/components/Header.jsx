@@ -1,7 +1,6 @@
 import styles from './Header.module.css';
 import {NavLink} from 'react-router-dom';
-
-
+import ThemeToggleButton from './ThemeToggleButton';
 
 
 function Header() {
@@ -15,6 +14,7 @@ function Header() {
                 {/* NavLink が自動で渡してくれる「表示中かどうか」の真偽値 */}
                 <NavLink to="/" className={({isActive}) => `${styles.navLink} ${(isActive) ? styles.active : ""}`}>ToDo</NavLink>
                 <NavLink to="/memo" className={({isActive}) => `${styles.navLink} ${(isActive) ? styles.active : ""}`}>Memo</NavLink>
+                <ThemeToggleButton/>
             </nav>
         </header>
     )

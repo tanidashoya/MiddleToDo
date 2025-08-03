@@ -9,7 +9,7 @@ import styles from './Home.module.css';
 import useFilteredTasks from '../hooks/useFilteredTasks.js';
 import useSortedTasks from '../hooks/useSortedTasks.js';
 import useEnterKey from '../hooks/useEnterKey.js';
-import useLocalStorageReducer from '../hooks/useLocalStrageReducer.js';
+import useLocalStorageReducer from '../hooks/useLocalStorageReducer.js';
 import {taskReducer} from '../reducers/taskReducer.js';
 
 
@@ -21,6 +21,9 @@ function Home() {
     //useRefはDOM要素を参照するためのフック（これでinput要素を参照できる）
     const taskInputRef = useRef(null);
     const dueDateInputRef = useRef(null);
+    const editTextInputRef = useRef(null);
+    const editDateInputRef = useRef(null);
+    
 
     //期限日付の管理をする
     const [dueDate, setDueDate] = useState("");
@@ -39,6 +42,8 @@ function Home() {
 
     //編集中のタスクを管理するuseState
     const [editText,setEditText] = useState("");
+
+    const [editDate,setEditDate] = useState("");
 
     //編集中のタスクを管理するuseState
     const [editingTask,setEditingTask] = useState(null);
@@ -98,18 +103,34 @@ function Home() {
           handleAddTask();
         }
     });
-      
 
-
-    //DOM要素を参照してイベントを追加するカスタムHookなので変数代入も要素に設定も必要ない
     useEnterKey(dueDateInputRef,(e)=>{
-        if (e.ctrlKey){
+        if (e.ctrlKey) {
             setDueDate("");
         } else {
             e.preventDefault();
             taskInputRef.current?.focus();
         }
     })
+
+      
+    useEnterKey(editTextInputRef,(e)=>{
+        e.preventDefault();
+        editDateInputRef.current?.focus();
+    })
+
+
+
+    //編集モードの日付入力欄でEnterキーを押した時に保存
+    //editingTaskは編集モードに入ったtaskオブジェクトを管理している
+    //handleSaveTaskは編集モードに入ったタスクのtask⇒editText,due⇒editDateを編集して保存する
+    useEnterKey(editDateInputRef,()=>{
+        if (editingTask) {
+            handleSaveTask(editingTask);
+        }
+    })
+
+
 
 
 
@@ -135,19 +156,22 @@ function Home() {
     const handleEditTask = (taskToEdit) => {
         setEditingTask(taskToEdit);
         setEditText(taskToEdit.task);
+        setEditDate(taskToEdit.due);
     }
 
     //編集中のタスクを保存する
     const handleSaveTask = (taskToSave) => {
-        dispatch({"type":"edit",payload:{original:taskToSave,editText:editText}});
+        dispatch({"type":"edit",payload:{original:taskToSave,editText:editText,editDate:editDate}});
         //編集中のタスクを保存したら編集モードを終了するためにsetEditingTaskをnullにする
         setEditingTask(null);
         setEditText("");
+        setEditDate("");
     }
 
     const handleEditCancel = () => {
         setEditingTask(null);
         setEditText("");
+        setEditDate("");
     }
 
     //並び替え順を変更する
@@ -206,10 +230,14 @@ function Home() {
                         handleToggleTask={handleToggleTask} 
                         handleEditTask={handleEditTask}
                         editText={editText}
+                        editDate={editDate}
+                        setEditDate={setEditDate}
                         editingTask={editingTask}
                         setEditText={setEditText}
                         handleSaveTask={handleSaveTask}
                         handleEditCancel={handleEditCancel}
+                        editTextInputRef={editTextInputRef}
+                        editDateInputRef={editDateInputRef}
                         // sorterdTasks={sorterdTasks}
                         />
                     </div>

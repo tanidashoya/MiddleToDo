@@ -3,9 +3,9 @@ import { useState,useEffect,useRef } from 'react';  //useRefはDOM要素を参�
 import MemoList from '../components/MemoList.jsx';
 import useWindowKey from '../hooks/useWindowKey.js';
 import useSortedTasks from '../hooks/useSortedTasks.js';
-
-
-
+import useLocalStorageReducer from '../hooks/useLocalStorageReducer.js';
+import { memoReducer } from '../reducers/memoReducer.js';
+import useFilteredMemos from '../hooks/useFilteredMemos.js';
 
 function Memo() {
 
@@ -16,17 +16,7 @@ function Memo() {
 
     //メモリストを管理するuseState
     //初期値をlocalStorageから読み込む
-    const [memoList,setMemoList] = useState(()=>{
-        const storedMemoList = localStorage.getItem("memoList");
-        return storedMemoList ? JSON.parse(storedMemoList) : [];
-    });
-
-    //メモの内容をlocalstorageに保存する
-    //JSON.stringify(オブジェクト) → オブジェクトをJSON形式の文字列に変換するメソッド
-    useEffect(()=>{
-        localStorage.setItem("memoList",JSON.stringify(memoList));
-    },[memoList])
-
+    const [memoList,dispatch] = useLocalStorageReducer("memoList",memoReducer,[]);
 
     
     //メモの内容を管理するuseState
@@ -51,16 +41,7 @@ function Memo() {
             alert("内容を入力してください");
             return;
         }
-        //新しいメモを作成する（newMemoにオブジェクトとして格納）
-        const newMemo = {
-            id:Date.now(),
-            title:memoTitle,
-            content:memoContent,
-            // 作成した日付を日付型で格納
-            createdAt:new Date().toLocaleDateString()
-        }
-        //memoListに新しいメモを追加する(配列に追加)
-        setMemoList([...memoList,newMemo]);
+        dispatch({"type":"save",payload:{id:Date.now(),title:memoTitle,content:memoContent,createdAt:new Date().toLocaleDateString()}})
         setMemoTitle("");
         setMemoContent("");
         //作成画面を閉じる
@@ -69,7 +50,7 @@ function Memo() {
 
     //メモを削除するボタン
     const handleDelete = (memo) => {
-        setMemoList(memoList.filter((m)=>m !== memo));
+        dispatch({"type":"delete",payload:memo});
     }
 
     //メモの作成をキャンセルする（作成画面で使う）
@@ -147,10 +128,7 @@ function Memo() {
     //toLowerCase()は文字列を小文字に変換するメソッド
     //includes()は文字列に指定した文字列が含まれているかどうかを判断するメソッド
     //検索対象の文字列.includes(検索したい文字列)
-    const filteredMemoList = sortedMemoList.filter(memo => 
-        memo.title.toLowerCase().includes(searchText.toLowerCase()) || 
-        memo.content.toLowerCase().includes(searchText.toLowerCase())
-    )
+    const filteredMemoList = useFilteredMemos(sortedMemoList,searchText)
     
 
 
@@ -228,7 +206,8 @@ function Memo() {
                         handleDelete={handleDelete} 
                         setMemoTitle={setMemoTitle}
                         setMemoContent={setMemoContent}
-                        setMemoList={setMemoList}
+                        //dispatchはmemoReducerの中で定義されたactionを実行するための関数
+                        dispatch={dispatch}
                     />
                 </div>
                 )}

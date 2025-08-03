@@ -10,7 +10,7 @@ function MemoList(props) {
         handleDelete,
         setMemoTitle,
         setMemoContent,
-        setMemoList
+        dispatch
     } 
     = props;
 
@@ -44,10 +44,10 @@ function MemoList(props) {
     //特定箇所のtitleをeditTitleに、contentをeditContentに変更している
     const handleSaveEdit = () => {
         if (isEditing) {
-            const updatedList = filteredMemoList.map((memo)=>
-                memo === editingMemo ? {...memo,title: editTitle,content: editContent,createdAt:editDate} : memo
-            )
-            setMemoList(updatedList);
+            // const updatedList = filteredMemoList.map((memo)=>
+            //     memo === editingMemo ? {...memo,title: editTitle,content: editContent,createdAt:editDate} : memo
+            // )
+            dispatch({"type":"edit",payload:{original:editingMemo,editTitle:editTitle,editContent:editContent,editDate:editDate}})
         }
         //編集モードを終了する
         setIsEditing(false);

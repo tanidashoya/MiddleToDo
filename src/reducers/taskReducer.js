@@ -14,7 +14,7 @@ export const taskReducer = (state,action) => {
         case "toggle":
             return state.map((task) => task ===action.payload ? {...task,completed:!task.completed} : task)
         case "edit":
-            return state.map((task) => task === action.payload.original ? {...task,task:action.payload.editText} : task)
+            return state.map((task) => task === action.payload.original ? {...task,task:action.payload.editText,due:action.payload.editDate} : task)
         default:
             return state
     }

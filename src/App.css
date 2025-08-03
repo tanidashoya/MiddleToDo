@@ -1,5 +1,21 @@
 html, body {
-  min-height: 100%;
-  background:linear-gradient(225deg, rgb(237, 166, 255), #ffbc85);
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  /* background:linear-gradient(225deg, rgb(237, 166, 255), #ffbc85); */
   /* background-attachment: fixed; */
+}
+
+.app.dark {
+  background:linear-gradient(225deg, rgb(25, 35, 55), rgb(45, 55, 75));
+}
+
+.app.light {
+  background:linear-gradient(225deg, rgb(237, 166, 255), #ffbc85);
+}
+
+.app {
+  min-height: 100vh;
+  height: 100%;
+  transition: background .5s ease-in-out, color .5s ease-in-out;
 }

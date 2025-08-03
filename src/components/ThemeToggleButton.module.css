@@ -1,0 +1,30 @@
+.themeToggleButton {
+    background-color: #fff;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #fff;
+    /* transition: background-color .5s ease-in-out, color .5s ease-in-out; */
+    padding: 0.5rem 1rem;
+    outline: none;
+}
+
+.themeToggleButton.light {
+    background-color: #535377;
+    color: #fff;
+}
+
+.themeToggleButton.dark {
+    background-color: #fff;
+    color: #000;
+}
+
+.themeToggleButton:hover {
+  cursor: pointer;
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.themeToggleButton:focus {
+    outline: none;
+}
