@@ -5,6 +5,7 @@ import styles from "./ThemeToggleButton.module.css";
 
 // アロー関数でコンポーネントを定義
 const ThemeToggleButton = () => {
+
     const {theme,toggleTheme} = useContext(ThemeContext);
 
     return(

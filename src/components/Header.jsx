@@ -14,6 +14,7 @@ function Header() {
                 {/* NavLink が自動で渡してくれる「表示中かどうか」の真偽値 */}
                 <NavLink to="/" className={({isActive}) => `${styles.navLink} ${(isActive) ? styles.active : ""}`}>ToDo</NavLink>
                 <NavLink to="/memo" className={({isActive}) => `${styles.navLink} ${(isActive) ? styles.active : ""}`}>Memo</NavLink>
+                {/* Header内の子コンポーネントもuseContextを使ってthemeとtoggleThemeを参照できる */}
                 <ThemeToggleButton/>
             </nav>
         </header>

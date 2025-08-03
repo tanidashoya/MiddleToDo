@@ -13,6 +13,7 @@ import {ThemeProvider} from './contexts/ThemeContext.jsx'
 // AppWrapper の外側で ThemeProvider を使ってるので、内部で theme を参照可能。
 // AppWrapper の中に <div className={app ${theme}}> を置けば、全体にクラスが適用され、lightかdarkでCSSの適用を切り替えることができる。
 function AppWrapper() {
+  //<div className={`app ${theme}`}>でthemeの値に応じてappクラスにlightかdarkが付与される機能を使うために、useContextを使ってthemeを参照している
   const {theme} = useContext(ThemeContext)
   
 //returnの中はbodyの中に入る
