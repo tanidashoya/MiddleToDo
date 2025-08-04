@@ -31,11 +31,35 @@
 }
 
 .sendButton{
-    width: 15%;
+    width:13%;
+    min-width: 50px;
+    height: 50px;
     border: none;
     border-radius: 10px;
-    max-height: 50px;
-    /* padding: 10px; */
+    background-color: #ffffff;
+    padding: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s ease, scale 0.3s ease;
+}
+
+.sendButton:hover {
+    background-color: #63c3fa;
+    scale: 1.05;
+}
+
+
+.sendButton img {
+    width: 35px;
+    height: 35px;
+    transition: filter 0.3s ease, scale 0.3s ease;
+}
+
+.sendButton:hover img {
+    filter: invert(1);
+    scale: 1.05;
 }
 
 .chatTitle {
