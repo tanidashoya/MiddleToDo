@@ -1,7 +1,9 @@
 .header {
     width: 100vw;
+    max-width: 1000px;
+    margin: 0 auto;
     /* background-color: rgba(19, 19, 19, 0.1); */
-    padding: 2.5rem 0;
+    padding: 2.5rem 3rem;
     /* margin-bottom: 1rem; */
     /* border-bottom: 1px solid rgba(255, 255, 255, 0.2); */
     /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
@@ -9,9 +11,14 @@
 
 .nav {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     gap: 8rem;
     flex-direction: row;
+}
+
+.navLinkContainer {
+    display: flex;
+    gap: 1.5rem;
 }
 
 .navLink {
@@ -26,8 +33,9 @@
 }
 
 .navLink:hover {
-
+    background-color: #fff;
     color: #000;
+    opacity: 0.6;
 }
 
 .active {

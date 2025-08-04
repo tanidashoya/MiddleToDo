@@ -1,6 +1,6 @@
 
 .home {
-    min-height: 100vh;
+    min-height: 50vh;
 }
 
 .homeContainer{
@@ -9,7 +9,7 @@
     align-items: center;
     justify-content: flex-start;
     width: 100%;
-    min-height: 100vh;
+    min-height: 50vh;
     text-align: center;
     /* background:linear-gradient(45deg, rgb(239, 176, 255), #ff8936); */
     padding-top: 2rem;

@@ -12,8 +12,11 @@ function Header() {
                 {/* アクティブなページに対してはactiveクラスを追加する */}
                 {/* isActiveはNavLinkのpropsで、現在のページがアクティブかどうか(true/false)を示す */}
                 {/* NavLink が自動で渡してくれる「表示中かどうか」の真偽値 */}
-                <NavLink to="/" className={({isActive}) => `${styles.navLink} ${(isActive) ? styles.active : ""}`}>ToDo</NavLink>
-                <NavLink to="/memo" className={({isActive}) => `${styles.navLink} ${(isActive) ? styles.active : ""}`}>Memo</NavLink>
+                <div className={styles.navLinkContainer}>
+                    <NavLink to="/" className={({isActive}) => `${styles.navLink} ${(isActive) ? styles.active : ""}`}>ToDo</NavLink>
+                    <NavLink to="/memo" className={({isActive}) => `${styles.navLink} ${(isActive) ? styles.active : ""}`}>Memo</NavLink>
+                    <NavLink to="/chat" className={({isActive}) => `${styles.navLink} ${(isActive) ? styles.active : ""}`}>Chat</NavLink>
+                </div>
                 {/* Header内の子コンポーネントもuseContextを使ってthemeとtoggleThemeを参照できる */}
                 <ThemeToggleButton/>
             </nav>

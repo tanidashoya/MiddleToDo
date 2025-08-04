@@ -6,6 +6,7 @@ import './App.css'
 import {useContext} from 'react'
 import {ThemeContext} from './contexts/ThemeContext.jsx'
 import {ThemeProvider} from './contexts/ThemeContext.jsx'
+import Chat from './pages/Chat.jsx'
 
 
 //AppWrapper は、ThemeProvider の中に入れたコンポーネント
@@ -26,6 +27,7 @@ function AppWrapper() {
         <Routes>
           <Route path="/" element={<Home/>}/>
           <Route path="/memo" element={<Memo/>}/>
+          <Route path="/chat" element={<Chat/>}/>
         </Routes>
       </BrowserRouter>
     </div>
