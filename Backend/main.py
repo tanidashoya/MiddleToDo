@@ -19,9 +19,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+#データの形式を定義
+#受け取るデータは、message という名前の文字列だよ」と定義している。
+#{ "msg": "こんにちは" }  ← "message" じゃないからエラーになる
 class ChatRequest(BaseModel):
     message: str
 
+#asyncを関数の前につけると、この関数、時間かかるかもしれんけえ、他の処理と並行してやるようにしておくで！になる（非同期処理）
+#openai.ChatCompletion.create() = チャットボットのAPIを呼び出す関数(これは同期関数なのでawaitがなくても処理が終わるまで一時停止する)
 @app.post("/chat")
 async def chat(request: ChatRequest):
     response = openai.ChatCompletion.create(
