@@ -83,3 +83,17 @@
     border-color: #ff8936;
     box-shadow: 0 0 0 2px rgba(255, 137, 54, 0.2);
 }
+
+.chatMessages{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(236, 236, 236, 1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}

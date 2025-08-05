@@ -6,10 +6,17 @@ import sendIcon2 from '../assets/sendIcon.png';
 function Chat() {
 
     const messageInputRef = useRef(null);
-    const [message, setMessage] = useState('');
+    const [newMessage, setNewMessage] = useState('');
+    const [messages, setMessages] = useState([]);
+    const [isChatting, setIsChatting] = useState(false);
     
     const handleMessageChange = (e) => {
-        setMessage(e.target.value);
+        setNewMessage(e.target.value);
+    }
+
+    const handleIsChatting = () => {
+        setMessages([...messages,newMessage])
+        setIsChatting(true);
     }
 
     return (
@@ -17,13 +24,20 @@ function Chat() {
             <div className={styles.chatContainer}>
                 <h1 className={styles.chatTitle}>Chat</h1>
                 <div className={styles.chatInputContainer}>
-                    <AutoResizeTextarea ref={messageInputRef} value={message} onChange={handleMessageChange}/>
-                    <button className={styles.sendButton}>
+                        <AutoResizeTextarea ref={messageInputRef} value={newMessage} onChange={handleMessageChange}/>
+                    <button className={styles.sendButton} onClick={handleIsChatting}>
                         <img src={sendIcon2} alt="送信" />
                     </button>
                 </div>
                 {/* <input className={styles.chatInput} type="text" placeholder="メッセージを入力" value={message} onChange={(e) => setMessage(e.target.value)} ref={messageInputRef}/> */}
             </div>
+            {isChatting && (
+                <div className={styles.chatMessages}>
+                    {messages.map((message, index) => (
+                        <div key={index} className={styles.chatMessage}>{message}</div>
+                    ))}
+                </div>
+            )}
         </div>
     )
 }
