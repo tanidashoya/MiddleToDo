@@ -1,6 +1,4 @@
 
-
-
 function useSortedTasks(tasks,sortOrder){
     return [...tasks].sort((a,b)=>  {
         if (a.completed !== b.completed) {

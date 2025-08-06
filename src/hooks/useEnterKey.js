@@ -5,8 +5,9 @@ import { useEffect } from "react";
 // options：拡張オプション（今回は ctrlOnly のみ）
 function useEnterKey(ref, callback) {
 
-  //useEffect は、ref, callback, ctrlOnly の変更があったら、再実行される
+  //useEffect は、ref, callbackの変更があったら、再実行される
   //これは毎回の再レンダリングでaddEventListenerを登録することを防ぐためのもの
+  //ReactのuseEffectは「依存配列の中身がどうであれ、コンポーネントがマウント（初回描画）されたときには必ず一度発動します。
   useEffect(() => {
       const handler = (e) => {
         //そもそもEnterキーが押されていない場合はreturn
@@ -31,11 +32,16 @@ function useEnterKey(ref, callback) {
     return () => {
       element?.removeEventListener("keydown", handler);
     };
-    //ref, callbackの変更があったら、useEffect が再実行される
+    //ref, callbackの変更が無い限り、useEffect が再実行されない
   }, [ref, callback]);
 }
 
 export default useEnterKey;
+
+//初回のaddEventListener登録は、次の3つのステップを経て起こる：
+// 親コンポーネントがマウント（JSX → 実DOMへ）
+// ref.current に DOM 要素がセットされる
+// useEffect が実行されて、addEventListener が呼ばれる（refとcallbackが使える）
 
 
 

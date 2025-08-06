@@ -32,12 +32,7 @@ function Home() {
     //初期値はinputのvalueと考える
     const[newTask,setNewTask] = useState("");
 
-    //useLocalStorageReducerの第一引数は保存するデータのキー、第二引数はreducer、第三引数は初期値
-    //戻り値が[state,dispatch]があるので、それをtasksとdispatchに代入する
-    //dispatchによってuseLocalStorageReducer内にあるtaskReducerが実行される
-    //これはそもそもtasksをいろんなルール（add,delete,toggle,edit）で管理するためにuseReducerを使っている
-    //かつlocalStorageに保存・最初のレンダリング時に取得するためにuseLocalStorageReducerのカスタムHookを使っている
-    //以上の機能を持つカスタムHook（useLocalStorageReducer）
+    //useLocalStorageReducerはlocalStorageに保存するためのカスタムHook
     const [tasks,dispatch] =useLocalStorageReducer("tasks",taskReducer,[]);
 
     //編集中のタスクを管理するuseState
@@ -54,14 +49,11 @@ function Home() {
     //検索欄の文字を管理するuseState
     const [searchText,setSearchText] = useState("");
 
-
     //e.target⇒イベントが発生した要素
     //e.target.value⇒イベントが発生した要素のvalue
     const handleChange = (e) => {
         setNewTask(e.target.value)
     }
-
-
 
     const handleAddTask = () => {
         if(newTask.trim() !== ""){
@@ -72,7 +64,6 @@ function Home() {
             setNewTask(""); // 入力フィールドをクリア
         }
     }
-
 
 
     //インデックスではなく削除したいタスクを指定して削除する
@@ -92,6 +83,9 @@ function Home() {
     
 
     //DOM要素を参照してイベントを追加するカスタムHookなので変数代入も要素に設定も必要ない
+    //useEnterKeyが初回発動する条件 = Home.jsxが画面に表示された（＝マウントされた）とき」
+    //【レンダリング】=JSX（仮想DOM）をReactが解釈してDOMに変換するプロセス。React内部の処理(画面に表示されていない)
+    //DOMに表示(=マウント)=Reactが仮想DOMと比較（diff）し、ブラウザの「本物のDOM」に反映(画面に表示される)
     useEnterKey(taskInputRef, (e) => {
         //ctrlキーが押されている場合は最初のタスクを削除
         //ctrlキーが押されていない場合はタスクを追加
@@ -131,26 +125,6 @@ function Home() {
     })
 
 
-
-
-
-    //期限入力欄でctrl+Enterキーが押されたら期限をクリア
-    //  taskInputRef.current → 実際の <input> 要素 
-    //  .focus() → ブラウザの機能で「その入力欄にカーソルを置く」 
-    //  taskInputRef.currentがnullでない場合にのみメソッドを呼び出す(nullの場合?がないとエラーになりアプリが止まる)
-    // const handleKeyDownDue = (e) => {
-    //     if (e.ctrlKey && e.key === 'Enter'){
-    //         setDueDate("");
-    //     }
-
-    //     if (e.key === 'Enter') {
-    //         e.preventDefault(); // フォームの送信などを防止
-    //         taskInputRef.current?.focus();
-    //     }
-    // }
-
-
-
     //編集中のタスクを編集する(編集ボタンが押されたら編集モードに入る)
     //タスクオブジェクトを受け取るように変更
     const handleEditTask = (taskToEdit) => {
@@ -175,18 +149,9 @@ function Home() {
     }
 
     //並び替え順を変更する
-    //比較用関数を作成
-    //a,bは現在処理中の要素（a:一つ目の要素,b:二つ目の要素）
-    //sortOrderが"asc"の場合はa.dueとb.dueを比較してa.dueがb.dueより小さい場合は-1,大きい場合は1,等しい場合は0を返す
-    //sortOrderが"desc"の場合はa.dueとb.dueを比較してa.dueがb.dueより大きい場合は-1,小さい場合は1,等しい場合は0を返す
-    //sortの引数が負の数であれば昇順、正の数であれば降順
-    //全体として隣り合った数字同氏を比べて昇順・降順を繰り返して全体として昇順・降順としている
     const sorterdTasks = useSortedTasks(tasks,sortOrder)
 
-    //検索欄に文字を入力したら入力した文字でフィルターされる
-    //検索窓が空の場合はsorterdTasksをそのまま表示する（includes("")は全ての文字列にマッチする）
     //検索結果は新たな状態として保持していないので入力を消すと元に戻る
-    //filter()は配列の要素を一つずつ取り出して、条件に合うかどうかを判断する。処理部分がTrueの場合は新しい配列に追加
     const filteredTasks = useFilteredTasks(sorterdTasks,searchText)
 
     //Reactのフォームでは、<input> や <textarea> に入力された値を即時に state に保存することで、
