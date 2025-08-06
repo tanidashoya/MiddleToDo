@@ -1,4 +1,3 @@
-import { useState } from "react";
 
 function useFilteredTasks(sortedTasks,searchText){
     return sortedTasks.filter(task => 

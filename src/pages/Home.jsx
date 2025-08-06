@@ -151,13 +151,9 @@ function Home() {
     //並び替え順を変更する
     const sorterdTasks = useSortedTasks(tasks,sortOrder)
 
-    //検索結果は新たな状態として保持していないので入力を消すと元に戻る
+    //検索結果は新たな状態として保持していないので入力を消すと元に戻る(毎回リアルタイムでフィルタしているだけ)
     const filteredTasks = useFilteredTasks(sorterdTasks,searchText)
 
-    //Reactのフォームでは、<input> や <textarea> に入力された値を即時に state に保存することで、
-    //常に「状態 = 入力内容」を一致させておくのが基本
-    //つまり、入力内容が変わったら状態を更新する
-    //そのため、onChangeで状態を更新する
     return(
         <div className={styles.home}>
 
