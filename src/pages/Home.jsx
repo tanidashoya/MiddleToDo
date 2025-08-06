@@ -66,17 +66,12 @@ function Home() {
     }
 
 
-    //インデックスではなく削除したいタスクを指定して削除する
+    //タスクを指定して削除する
     const handleDeleteTask = (taskToDelete) => {
-        //タスクの内容で検索して削除する
-        //ここでのtaskはtasks配列の一つ一つの要素{task:"タスク名", completed:false, due:dueDate}というオブジェクトとして渡される
         dispatch({"type":"delete",payload:taskToDelete})
     }
 
     //タスクの完了状態をチェックボックスで切り替える
-    //インデックスではなくタスクオブジェクトを受け取るように変更
-    //ここでのreturnはhandleToggleTaskのreturnではなく、map関数のreturnである
-    //map関数は配列の各要素に対して処理を行う関数であり、新しい配列に入っていく
     const handleToggleTask = (taskToToggle) => {
         dispatch({"type":"toggle",payload:taskToToggle})
     }
@@ -114,10 +109,10 @@ function Home() {
     })
 
 
-
-    //編集モードの日付入力欄でEnterキーを押した時に保存
-    //editingTaskは編集モードに入ったtaskオブジェクトを管理している
-    //handleSaveTaskは編集モードに入ったタスクのtask⇒editText,due⇒editDateを編集して保存する
+    // 親コンポーネントで定義された ref を子コンポーネントに渡し、
+    // 子で <input ref={ref} /> のように設定していれば、
+    // 親で使っているカスタムHook（たとえば useEnterKey(ref, callback)）
+    // の処理は、その子コンポーネント内のDOM要素に適用されます。
     useEnterKey(editDateInputRef,()=>{
         if (editingTask) {
             handleSaveTask(editingTask);
@@ -136,7 +131,6 @@ function Home() {
     //編集中のタスクを保存する
     const handleSaveTask = (taskToSave) => {
         dispatch({"type":"edit",payload:{original:taskToSave,editText:editText,editDate:editDate}});
-        //編集中のタスクを保存したら編集モードを終了するためにsetEditingTaskをnullにする
         setEditingTask(null);
         setEditText("");
         setEditDate("");
@@ -149,6 +143,7 @@ function Home() {
     }
 
     //並び替え順を変更する
+    //その時点での計算結果をuseSortedTasksで保持している
     const sorterdTasks = useSortedTasks(tasks,sortOrder)
 
     //検索結果は新たな状態として保持していないので入力を消すと元に戻る(毎回リアルタイムでフィルタしているだけ)
@@ -179,7 +174,6 @@ function Home() {
                     </button>
                 </div>
                 </div>
-                {/* tasks.length > 0⇒タスクが1つ以上ある場合 */}
                 {/* 左側がtrueの場合は右側の処理が実行される */}
                 {tasks.length > 0 && (
                     <div className={styles.taskList}>
@@ -199,7 +193,6 @@ function Home() {
                         handleEditCancel={handleEditCancel}
                         editTextInputRef={editTextInputRef}
                         editDateInputRef={editDateInputRef}
-                        // sorterdTasks={sorterdTasks}
                         />
                     </div>
                 )}
