@@ -16,7 +16,6 @@ import {taskReducer} from '../reducers/taskReducer.js';
 
 function Home() {
 
-
     //カスタムHookでショートカットキーを扱うためのuseRef
     //useRefはDOM要素を参照するためのフック（これでinput要素を参照できる）
     const taskInputRef = useRef(null);
@@ -24,7 +23,6 @@ function Home() {
     const editTextInputRef = useRef(null);
     const editDateInputRef = useRef(null);
     
-
     //期限日付の管理をする
     const [dueDate, setDueDate] = useState("");
 

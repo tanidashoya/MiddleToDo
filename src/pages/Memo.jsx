@@ -65,7 +65,6 @@ function Memo() {
     })
 
     const sortedMemoList = useSortedTasks(memoList,sortOrder)
-
     const filteredMemoList = useFilteredMemos(sortedMemoList,searchText)
     
     return(

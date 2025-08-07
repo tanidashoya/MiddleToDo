@@ -41,6 +41,11 @@ function Chat() {
     // 終わったらまた続きを実行する！
     //awaitがある部分だけ一時停止するけど、他の処理は並行して動く（非同期のまま）！
     //定数resにはサーバーからのレスポンスが入っている
+    //promise = 非同期処理の結果を表すオブジェクト
+    //fetchは即座に結果が決まってない箱（Promiseオブジェクト）を返す
+    //その Promise は「サーバーからのレスポンスが返ってくるまでの一時的な箱」
+    // await を付けることで「中身が返ってくるまで処理を止める」
+    // 「Promiseの中身」が返ってくると、処理が再開される
     try {
       const res = await fetch("http://localhost:8000/chat", {
         method: "POST",  //データを送信する時はPOST、データを受け取る時はGET(FastAPI側では@app.post("/chat")となっている)
@@ -51,7 +56,6 @@ function Chat() {
         body: JSON.stringify({ message: userMessage }),  //データを送信する時はbodyにデータを入れる(サーバーに送る実際のデータ本体)
       });
 
-      //res.json() = サーバーからのレスポンスをJSON形式の文字列に変換する関数
       //res.json()の返り値はPromiseオブジェクトなのでawaitで待つ
       //awaitはその処理が終わるまでは次の行に進まないようにするキーワード
       //他の処理を止めずにその関数の中だけ次に進まずに一時停止
@@ -59,6 +63,10 @@ function Chat() {
       const data = await res.json();
       const reply = data.reply;
 
+      // try-catch-finally = エラーが発生した時の処理
+      // try = 正常に処理が終わった時の処理
+      // catch = エラーが発生した時の処理
+      // finally = 正常に処理が終わった時の処理
       setMessages(prev => [...prev, { role: 'assistant', text: reply }]);
     } catch (error) {
       console.error("APIエラー:", error);
@@ -84,6 +92,7 @@ function Chat() {
         </div>
       </div>
 
+      {/* チャット中のメッセージを表示 */}
       {isChatting && (
         <div className={styles.chatMessages}>
           {messages.map((msg, index) => (

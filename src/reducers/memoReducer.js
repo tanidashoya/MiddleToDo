@@ -13,10 +13,6 @@ export const memoReducer = (state,action) => {
 }
 
 
-// useReducer を使うことで「現在の状態に対してどう変更するか」のロジックを reducer に集約できる。
-// useState のように変更後の状態を定数に格納して set 関数に渡す必要がなくなる。
-// ただし、状態は直接変更するのではなく、「新しい状態を作って返す」形で更新する点は同じ。
-
 
 // useState型	                                      useReducer型
 // 「状態をどう変更するかは自分で処理してから渡す」	     「状態をどう変えるかは reducer に任せる」

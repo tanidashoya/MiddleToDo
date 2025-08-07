@@ -4,7 +4,6 @@ import { useState } from 'react';
 
 function MemoList(props) {
 
-
     const {
         filteredMemoList,
         handleDelete,
@@ -37,16 +36,11 @@ function MemoList(props) {
         setEditingMemo(null);
         setMemoTitle('');
         setMemoContent('');
+        setEditDate('');
     }
     
-    // memo === editingMemo ? 
-    //この部分の参考演算子でeditingMemo（編集中のmemo）とMemoListのメモの一致している箇所を特定している
-    //特定箇所のtitleをeditTitleに、contentをeditContentに変更している
     const handleSaveEdit = () => {
         if (isEditing) {
-            // const updatedList = filteredMemoList.map((memo)=>
-            //     memo === editingMemo ? {...memo,title: editTitle,content: editContent,createdAt:editDate} : memo
-            // )
             dispatch({"type":"edit",payload:{original:editingMemo,editTitle:editTitle,editContent:editContent,editDate:editDate}})
         }
         //編集モードを終了する
@@ -57,10 +51,6 @@ function MemoList(props) {
         setEditDate('');
     }
     
-    //Reactのフォームでは、<input> や <textarea> に入力された値を即時に state に保存することで、
-    //常に「状態 = 入力内容」を一致させておくのが基本
-    //つまり、入力内容が変わったら状態を更新する
-    //そのため、onChangeで状態を更新する
     return(
         <div className={styles.memoListContainer}>
             {filteredMemoList.map((memo,index)=>(
